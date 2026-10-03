@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - TaskForge</title>
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+</head>
+
+<body class="auth-body">
+
+    <div class="auth-layout">
+
+        <!-- SOL TARAF -->
+        <div class="auth-brand-panel">
+
+            <div class="auth-brand-content">
+
+                <div class="auth-logo">
+                    TF
+                </div>
+
+                <h1>TaskForge</h1>
+
+                <p class="auth-brand-subtitle">
+                    Projelerini planla, görevlerini yönet
+                    ve ilerlemeni tek bir yerden takip et.
+                </p>
+
+
+                <div class="auth-features">
+
+                    <div class="auth-feature">
+                        <div class="feature-icon">✓</div>
+
+                        <div>
+                            <strong>Projelerini yönet</strong>
+                            <span>
+                                Tüm projelerini düzenli bir şekilde takip et.
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="auth-feature">
+                        <div class="feature-icon">✓</div>
+
+                        <div>
+                            <strong>Görevlerini takip et</strong>
+                            <span>
+                                Tamamlanan ve devam eden görevlerini görüntüle.
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="auth-feature">
+                        <div class="feature-icon">✓</div>
+
+                        <div>
+                            <strong>İlerlemeni gör</strong>
+                            <span>
+                                Dashboard üzerinden proje performansını izle.
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="auth-brand-footer">
+                TaskForge Project Management
+            </div>
+
+        </div>
+
+
+        <!-- SAĞ TARAF -->
+        <main class="auth-content">
+
+            @RenderBody()
+
+        </main>
+
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

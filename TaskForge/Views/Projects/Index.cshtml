@@ -1,0 +1,393 @@
+﻿@model List<TaskForge.Models.Project>
+
+@{
+    ViewData["Title"] = "Projeler";
+}
+
+<div class="projects-page">
+
+    <div class="page-header">
+        <div>
+            <h1>Projeler</h1>
+            <p>Tüm projelerini yönet, ilerlemelerini takip et.</p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Yeni Proje
+        </a>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="projects-empty">
+            <div class="empty-icon">▣</div>
+
+            <h3>Henüz projen yok</h3>
+
+            <p>
+                İlk projenizi oluşturarak görevlerinizi
+                organize etmeye başlayın.
+            </p>
+
+            <a asp-action="Create" class="btn btn-primary">
+                + İlk Projeyi Oluştur
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="project-grid">
+
+            @foreach (var project in Model)
+            {
+                <div class="project-list-card">
+
+                    <div class="project-top">
+
+                        <div class="project-icon">
+                            ▣
+                        </div>
+
+                        <div class="project-title-area">
+                            <h3>@project.Name</h3>
+
+                            <span class="project-date">
+                                @project.StartDate.ToString("dd.MM.yyyy")
+                                -
+                                @project.DueDate.ToString("dd.MM.yyyy")
+                            </span>
+                        </div>
+
+                        <span class="status-badge">
+                            @project.Status
+                        </span>
+
+                    </div>
+
+                    <p class="project-description">
+                        @project.Description
+                    </p>
+
+                    <div class="project-info">
+
+                        <div>
+                            <span>Öncelik</span>
+
+                            @if (project.ProjectPriority.ToString() == "High")
+                            {
+                                <strong class="priority-high">
+                                    ● High
+                                </strong>
+                            }
+                            else if (project.ProjectPriority.ToString() == "Medium")
+                            {
+                                <strong class="priority-medium">
+                                    ● Medium
+                                </strong>
+                            }
+                            else
+                            {
+                                <strong class="priority-low">
+                                    ● Low
+                                </strong>
+                            }
+                        </div>
+
+                        <div>
+                            <span>Oluşturulma</span>
+
+                            <strong>
+                                @project.CreatedAt.ToString("dd.MM.yyyy")
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <div class="project-actions">
+
+                        <a asp-controller="TaskItems"
+                           asp-action="Index"
+                           asp-route-projectId="@project.Id"
+                           class="btn btn-primary">
+                            Görevleri Aç
+                        </a>
+
+                        <a asp-action="Details"
+                           asp-route-id="@project.Id"
+                           class="action-button">
+                            Detay
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@project.Id"
+                           class="action-button">
+                            Düzenle
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@project.Id"
+                           class="action-button delete-action">
+                            Sil
+                        </a>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+<style>
+
+    .projects-page {
+        padding-top: 15px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 750;
+            color: #172033;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: #7a8493;
+            margin: 0;
+        }
+
+
+    /* GRID */
+
+    .project-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(430px, 1fr));
+        gap: 20px;
+    }
+
+
+    /* CARD */
+
+    .project-list-card {
+        background: white;
+        border: 1px solid #e5e9f0;
+        border-radius: 16px;
+        padding: 23px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        transition: 0.2s ease;
+    }
+
+        .project-list-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(28, 45, 80, 0.08);
+            border-color: #d8dfeb;
+        }
+
+
+    /* TOP */
+
+    .project-top {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+    }
+
+    .project-icon {
+        width: 43px;
+        height: 43px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eef3ff;
+        color: #4f6ff5;
+        border-radius: 11px;
+        font-size: 18px;
+    }
+
+    .project-title-area {
+        flex: 1;
+    }
+
+        .project-title-area h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #172033;
+            margin: 0 0 3px;
+        }
+
+    .project-date {
+        color: #8a94a4;
+        font-size: 12px;
+    }
+
+    .status-badge {
+        background: #eef3ff;
+        color: #4d6bd8;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+    /* DESCRIPTION */
+
+    .project-description {
+        color: #697586;
+        font-size: 13px;
+        line-height: 1.6;
+        margin: 20px 0;
+        min-height: 42px;
+    }
+
+
+    /* INFORMATION */
+
+    .project-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: #f8f9fc;
+        border-radius: 11px;
+        padding: 13px 15px;
+        margin-bottom: 20px;
+    }
+
+        .project-info div {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .project-info span {
+            color: #929baa;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .project-info strong {
+            color: #4e5969;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+    /* PRIORITIES */
+
+    .priority-high {
+        color: #dc3545 !important;
+    }
+
+    .priority-medium {
+        color: #f59e0b !important;
+    }
+
+    .priority-low {
+        color: #22a06b !important;
+    }
+
+
+    /* ACTIONS */
+
+    .project-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-top: 17px;
+        border-top: 1px solid #edf0f4;
+    }
+
+        .project-actions .btn-primary {
+            margin-right: auto;
+            padding-left: 16px;
+            padding-right: 16px;
+            font-size: 12px;
+        }
+
+    .action-button {
+        padding: 7px 10px;
+        border: 1px solid #e1e5ec;
+        border-radius: 8px;
+        color: #687386;
+        background: white;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .action-button:hover {
+            background: #f5f7fb;
+            color: #172033;
+            border-color: #d5dae3;
+        }
+
+    .delete-action:hover {
+        color: #dc3545;
+        background: #fff5f5;
+        border-color: #ffd6d6;
+    }
+
+
+    /* EMPTY */
+
+    .projects-empty {
+        background: white;
+        border: 1px solid #e5e9f0;
+        border-radius: 18px;
+        padding: 70px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+        border-radius: 15px;
+        background: #eef3ff;
+        color: #4f6ff5;
+        font-size: 25px;
+    }
+
+    .projects-empty h3 {
+        color: #172033;
+        font-weight: 700;
+    }
+
+    .projects-empty p {
+        color: #7b8492;
+        max-width: 420px;
+        margin: 8px auto 20px;
+    }
+
+
+    @@media (max-width: 700px) {
+
+        .project-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header {
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .project-actions {
+            flex-wrap: wrap;
+        }
+    }
+
+</style>

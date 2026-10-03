@@ -1,0 +1,103 @@
+﻿@model TaskForge.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = "_AuthLayout";
+}
+
+<div class="auth-form-wrapper">
+
+    <div class="mobile-brand">
+        <div class="mobile-logo">TF</div>
+        <strong>TaskForge</strong>
+    </div>
+
+
+    <div class="auth-form-header">
+
+        <span class="auth-eyebrow">
+            TEKRAR HOŞ GELDİN
+        </span>
+
+        <h2>Hesabına giriş yap</h2>
+
+        <p>
+            Projelerine ve görevlerine kaldığın yerden devam et.
+        </p>
+
+    </div>
+
+
+    <form asp-action="Login"
+          method="post"
+          class="auth-form">
+
+        <div asp-validation-summary="ModelOnly"
+             class="auth-validation">
+        </div>
+
+
+        <div class="auth-field">
+
+            <label asp-for="Email">
+                E-posta
+            </label>
+
+            <input asp-for="Email"
+                   class="auth-input"
+                   placeholder="ornek@email.com" />
+
+            <span asp-validation-for="Email"
+                  class="text-danger auth-error">
+            </span>
+
+        </div>
+
+
+        <div class="auth-field">
+
+            <div class="field-label-row">
+
+                <label asp-for="Password">
+                    Şifre
+                </label>
+
+            </div>
+
+            <input asp-for="Password"
+                   class="auth-input"
+                   placeholder="Şifreni gir" />
+
+            <span asp-validation-for="Password"
+                  class="text-danger auth-error">
+            </span>
+
+        </div>
+
+
+        <button type="submit"
+                class="auth-submit">
+            Giriş Yap
+        </button>
+
+
+        <div class="auth-switch">
+
+            <span>Henüz hesabın yok mu?</span>
+
+            <a asp-action="Register">
+                Hesap oluştur
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

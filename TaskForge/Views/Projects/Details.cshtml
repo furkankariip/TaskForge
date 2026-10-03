@@ -1,0 +1,476 @@
+﻿@model TaskForge.Models.Project
+
+@{
+    ViewData["Title"] = "Proje Detayı";
+}
+
+<div class="details-page">
+
+    <div class="details-header">
+
+        <div>
+            <a asp-action="Index" class="back-link">
+                ← Projelere Dön
+            </a>
+
+            <h1>@Model.Name</h1>
+            <p>Proje bilgileri ve planlama detayları.</p>
+        </div>
+
+        <div class="header-actions">
+
+            <a asp-controller="TaskItems"
+               asp-action="Index"
+               asp-route-projectId="@Model.Id"
+               class="btn btn-primary">
+                Görevleri Aç
+            </a>
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn-edit">
+                Düzenle
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="details-grid">
+
+        <!-- SOL TARAF -->
+
+        <div class="details-card main-details">
+
+            <div class="card-heading">
+
+                <div class="heading-icon">
+                    ▣
+                </div>
+
+                <div>
+                    <h3>Proje Bilgileri</h3>
+                    <p>Projenin genel bilgileri.</p>
+                </div>
+
+            </div>
+
+
+            <div class="detail-block">
+
+                <span class="detail-label">
+                    Proje Adı
+                </span>
+
+                <strong class="detail-value">
+                    @Model.Name
+                </strong>
+
+            </div>
+
+
+            <div class="detail-block">
+
+                <span class="detail-label">
+                    Açıklama
+                </span>
+
+                @if (string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <p class="description-empty">
+                        Açıklama eklenmemiş.
+                    </p>
+                }
+                else
+                {
+                    <p class="description-text">
+                        @Model.Description
+                    </p>
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- SAĞ TARAF -->
+
+        <div class="details-card">
+
+            <div class="card-heading">
+
+                <div class="heading-icon">
+                    ◷
+                </div>
+
+                <div>
+                    <h3>Planlama</h3>
+                    <p>Projenin durum ve tarih bilgileri.</p>
+                </div>
+
+            </div>
+
+
+            <div class="info-row">
+                <span>Durum</span>
+
+                <strong class="status-pill">
+                    @Model.Status
+                </strong>
+            </div>
+
+
+            <div class="info-row">
+                <span>Öncelik</span>
+
+                @if (Model.ProjectPriority.ToString() == "Critical")
+                {
+                    <strong class="priority critical">
+                        ● Critical
+                    </strong>
+                }
+                else if (Model.ProjectPriority.ToString() == "High")
+                {
+                    <strong class="priority high">
+                        ● High
+                    </strong>
+                }
+                else if (Model.ProjectPriority.ToString() == "Medium")
+                {
+                    <strong class="priority medium">
+                        ● Medium
+                    </strong>
+                }
+                else
+                {
+                    <strong class="priority low">
+                        ● Low
+                    </strong>
+                }
+
+            </div>
+
+
+            <div class="info-row">
+                <span>Başlangıç</span>
+
+                <strong>
+                    @Model.StartDate.ToString("dd.MM.yyyy")
+                </strong>
+            </div>
+
+
+            <div class="info-row">
+                <span>Bitiş</span>
+
+                <strong>
+                    @Model.DueDate.ToString("dd.MM.yyyy")
+                </strong>
+            </div>
+
+
+            <div class="info-row">
+                <span>Oluşturulma</span>
+
+                <strong>
+                    @Model.CreatedAt.ToString("dd.MM.yyyy")
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="danger-zone">
+
+        <div>
+            <h4>Tehlikeli Alan</h4>
+            <p>Bu projeyi ve ilişkili verileri silmek için kullan.</p>
+        </div>
+
+        <a asp-action="Delete"
+           asp-route-id="@Model.Id"
+           class="danger-button">
+            Projeyi Sil
+        </a>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .details-page {
+        padding-top: 10px;
+    }
+
+    .details-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: 13px;
+        color: #778294;
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+        .back-link:hover {
+            color: #4f6ff5;
+        }
+
+    .details-header h1 {
+        margin: 0 0 5px;
+        color: #172033;
+        font-size: 31px;
+        font-weight: 750;
+    }
+
+    .details-header p {
+        margin: 0;
+        color: #818b9a;
+        font-size: 13px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 9px;
+    }
+
+    .btn-edit {
+        padding: 9px 16px;
+        background: white;
+        border: 1px solid #dfe4eb;
+        border-radius: 9px;
+        color: #5e697a;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+        .btn-edit:hover {
+            background: #f6f8fb;
+            color: #263142;
+        }
+
+
+    /* GRID */
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .details-card {
+        background: white;
+        border: 1px solid #e5e9f0;
+        border-radius: 17px;
+        padding: 27px;
+        box-shadow: 0 4px 16px rgba(20, 35, 65, 0.03);
+    }
+
+
+    /* HEADING */
+
+    .card-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .heading-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 11px;
+        background: #eef3ff;
+        color: #4f6ff5;
+        font-weight: 700;
+    }
+
+    .card-heading h3 {
+        margin: 0 0 2px;
+        color: #263142;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .card-heading p {
+        margin: 0;
+        color: #929baa;
+        font-size: 10px;
+    }
+
+
+    /* DETAILS */
+
+    .detail-block {
+        margin-bottom: 25px;
+    }
+
+        .detail-block:last-child {
+            margin-bottom: 0;
+        }
+
+    .detail-label {
+        display: block;
+        margin-bottom: 7px;
+        color: #919aaa;
+        font-size: 10px;
+        font-weight: 650;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+    }
+
+    .detail-value {
+        color: #273243;
+        font-size: 17px;
+    }
+
+    .description-text {
+        margin: 0;
+        color: #687386;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .description-empty {
+        margin: 0;
+        color: #a1a8b3;
+        font-size: 12px;
+        font-style: italic;
+    }
+
+
+    /* INFO */
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 13px 0;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row > span {
+            color: #8993a2;
+            font-size: 11px;
+        }
+
+        .info-row > strong {
+            color: #465264;
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+    .status-pill {
+        padding: 5px 9px;
+        background: #eef3ff;
+        border-radius: 20px;
+        color: #4c6bd9 !important;
+    }
+
+
+    /* PRIORITY */
+
+    .priority.low {
+        color: #20a66a !important;
+    }
+
+    .priority.medium {
+        color: #e49a17 !important;
+    }
+
+    .priority.high {
+        color: #dc5a5a !important;
+    }
+
+    .priority.critical {
+        color: #b42318 !important;
+    }
+
+
+    /* DANGER */
+
+    .danger-zone {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 20px 24px;
+        background: #fffafa;
+        border: 1px solid #f4dada;
+        border-radius: 14px;
+    }
+
+        .danger-zone h4 {
+            margin: 0 0 3px;
+            color: #a43c3c;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .danger-zone p {
+            margin: 0;
+            color: #a97a7a;
+            font-size: 10px;
+        }
+
+    .danger-button {
+        padding: 8px 14px;
+        background: white;
+        border: 1px solid #efc4c4;
+        border-radius: 8px;
+        color: #c54c4c;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+        .danger-button:hover {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+
+
+    @@media (max-width: 850px) {
+
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .details-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .danger-zone {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+
+</style>

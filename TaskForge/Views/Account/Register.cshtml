@@ -1,0 +1,120 @@
+﻿@model TaskForge.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Kayıt Ol";
+    Layout = "_AuthLayout";
+}
+
+<div class="auth-form-wrapper">
+
+    <div class="mobile-brand">
+        <div class="mobile-logo">TF</div>
+        <strong>TaskForge</strong>
+    </div>
+
+
+    <div class="auth-form-header">
+
+        <span class="auth-eyebrow">
+            TASKFORGE'A KATIL
+        </span>
+
+        <h2>Yeni hesap oluştur</h2>
+
+        <p>
+            Projelerini ve görevlerini yönetmeye hemen başla.
+        </p>
+
+    </div>
+
+
+    <form asp-action="Register"
+          method="post"
+          class="auth-form">
+
+        <div asp-validation-summary="ModelOnly"
+             class="auth-validation">
+        </div>
+
+
+        <div class="auth-field">
+
+            <label asp-for="Email">
+                E-posta
+            </label>
+
+            <input asp-for="Email"
+                   class="auth-input"
+                   placeholder="ornek@email.com" />
+
+            <span asp-validation-for="Email"
+                  class="text-danger auth-error">
+            </span>
+
+        </div>
+
+
+        <div class="auth-field">
+
+            <label asp-for="Password">
+                Şifre
+            </label>
+
+            <input asp-for="Password"
+                   class="auth-input"
+                   placeholder="Güçlü bir şifre oluştur" />
+
+            <span asp-validation-for="Password"
+                  class="text-danger auth-error">
+            </span>
+
+            <span class="password-hint">
+                En az 6 karakter, büyük/küçük harf ve rakam kullan.
+            </span>
+
+        </div>
+
+
+        <div class="auth-field">
+
+            <label asp-for="ConfirmPassword">
+                Şifre Tekrar
+            </label>
+
+            <input asp-for="ConfirmPassword"
+                   class="auth-input"
+                   placeholder="Şifreni tekrar gir" />
+
+            <span asp-validation-for="ConfirmPassword"
+                  class="text-danger auth-error">
+            </span>
+
+        </div>
+
+
+        <button type="submit"
+                class="auth-submit">
+            Hesap Oluştur
+        </button>
+
+
+        <div class="auth-switch">
+
+            <span>Zaten hesabın var mı?</span>
+
+            <a asp-action="Login">
+                Giriş yap
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

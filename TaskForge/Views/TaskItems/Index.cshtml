@@ -1,0 +1,666 @@
+﻿@model List<TaskForge.Models.TaskItem>
+
+@{
+    ViewData["Title"] = "Görevler";
+
+    var totalTasks = Model.Count;
+    var completedTasks = Model.Count(x => x.IsCompleted);
+    var pendingTasks = totalTasks - completedTasks;
+
+    var progress = totalTasks == 0
+        ? 0
+        : (int)Math.Round((double)completedTasks / totalTasks * 100);
+}
+
+<div class="tasks-page">
+
+    <!-- ÜST BAŞLIK -->
+    <div class="tasks-header">
+
+        <div>
+            <a asp-controller="Projects"
+               asp-action="Index"
+               class="back-link">
+                ← Projelere Dön
+            </a>
+
+            <h1>@ViewBag.ProjectName</h1>
+
+            <p>Proje görevlerini yönet ve ilerlemeyi takip et.</p>
+        </div>
+
+        <a asp-action="Create"
+           asp-route-projectId="@ViewBag.ProjectId"
+           class="btn btn-primary">
+            + Yeni Görev
+        </a>
+
+    </div>
+
+
+    <!-- PROJE ÖZETİ -->
+    <div class="project-summary">
+
+        <div class="summary-top">
+
+            <div>
+                <span class="summary-label">
+                    Proje İlerlemesi
+                </span>
+
+                <div class="progress-number">
+                    @progress%
+                </div>
+            </div>
+
+            <div class="task-stats">
+
+                <div>
+                    <strong>@totalTasks</strong>
+                    <span>Toplam</span>
+                </div>
+
+                <div>
+                    <strong>@completedTasks</strong>
+                    <span>Tamamlanan</span>
+                </div>
+
+                <div>
+                    <strong>@pendingTasks</strong>
+                    <span>Devam Eden</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress progress-large">
+
+            <div class="progress-bar"
+                 role="progressbar"
+                 style="width: @progress%">
+            </div>
+
+        </div>
+
+        <div class="progress-footer">
+
+            <span>
+                @completedTasks / @totalTasks görev tamamlandı
+            </span>
+
+            @if (progress == 100 && totalTasks > 0)
+            {
+                <strong class="completed-text">
+                    ✓ Proje görevleri tamamlandı
+                </strong>
+            }
+            else
+            {
+                <span>
+                    Tamamlanmaya @pendingTasks görev kaldı
+                </span>
+            }
+
+        </div>
+
+    </div>
+
+
+    <!-- GÖREVLER PANELİ -->
+    <div class="tasks-panel">
+
+        <div class="tasks-panel-header">
+
+            <div>
+                <h3>Görevler</h3>
+
+                <p>
+                    Bu projeye ait tüm görevler.
+                </p>
+            </div>
+
+            <span class="task-count-badge">
+                @totalTasks görev
+            </span>
+
+        </div>
+
+
+        @if (Model.Count == 0)
+        {
+            <div class="task-empty">
+
+                <div class="empty-task-icon">
+                    ✓
+                </div>
+
+                <h4>Henüz görev yok</h4>
+
+                <p>
+                    Bu proje için ilk görevinizi oluşturun.
+                </p>
+
+                <a asp-action="Create"
+                   asp-route-projectId="@ViewBag.ProjectId"
+                   class="btn btn-primary">
+
+                    + İlk Görevi Oluştur
+
+                </a>
+
+            </div>
+        }
+        else
+        {
+            <div class="task-list">
+
+                @foreach (var task in Model.OrderBy(x => x.IsCompleted)
+               .ThenBy(x => x.DueDate))
+                {
+                    var isOverdue =
+                    !task.IsCompleted &&
+                    task.DueDate.Date < DateTime.Today;
+
+                    <div class="task-row @(task.IsCompleted ? "task-completed" : "")">
+
+                        <!-- CHECK -->
+                        <div class="task-check">
+
+                            @if (task.IsCompleted)
+                            {
+                                <div class="check-circle completed">
+                                    ✓
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="check-circle">
+                                </div>
+                            }
+
+                        </div>
+
+
+                        <!-- CONTENT -->
+                        <div class="task-content">
+
+                            <div class="task-title-line">
+
+                                <h4>@task.Title</h4>
+
+                                @if (task.IsCompleted)
+                                {
+                                    <span class="status completed-status">
+                                        Tamamlandı
+                                    </span>
+                                }
+                                else if (isOverdue)
+                                {
+                                    <span class="status overdue-status">
+                                        Gecikmiş
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status active-status">
+                                        Devam Ediyor
+                                    </span>
+                                }
+
+                            </div>
+
+
+                            @if (!string.IsNullOrWhiteSpace(task.Description))
+                            {
+                                <p>
+                                    @task.Description
+                                </p>
+                            }
+
+
+                            <div class="task-meta">
+
+                                <span>
+                                    Bitiş:
+                                    <strong>
+                                        @task.DueDate.ToString("dd.MM.yyyy")
+                                    </strong>
+                                </span>
+
+                                <span>
+                                    Oluşturulma:
+                                    <strong>
+                                        @task.CreatedAt.ToString("dd.MM.yyyy")
+                                    </strong>
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ACTIONS -->
+                        <div class="task-actions">
+
+                            <a asp-action="Edit"
+                               asp-route-id="@task.Id"
+                               class="task-action edit-action">
+
+                                Düzenle
+
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@task.Id"
+                               class="task-action delete-action">
+
+                                Sil
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .tasks-page {
+        padding-top: 10px;
+    }
+
+
+    /* HEADER */
+
+    .tasks-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 25px;
+    }
+
+    .back-link {
+        display: inline-block;
+        color: #718096;
+        text-decoration: none;
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
+
+        .back-link:hover {
+            color: #4f6ff5;
+        }
+
+    .tasks-header h1 {
+        margin: 0 0 5px;
+        font-size: 32px;
+        font-weight: 750;
+        color: #172033;
+    }
+
+    .tasks-header p {
+        margin: 0;
+        color: #7a8493;
+    }
+
+
+    /* SUMMARY */
+
+    .project-summary {
+        background: white;
+        border: 1px solid #e5e9f0;
+        border-radius: 17px;
+        padding: 25px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    }
+
+    .summary-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .summary-label {
+        color: #7c8798;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .progress-number {
+        font-size: 31px;
+        font-weight: 750;
+        color: #172033;
+        margin-top: 3px;
+    }
+
+
+    /* STATS */
+
+    .task-stats {
+        display: flex;
+        gap: 40px;
+    }
+
+        .task-stats div {
+            display: flex;
+            flex-direction: column;
+            min-width: 70px;
+        }
+
+        .task-stats strong {
+            color: #172033;
+            font-size: 18px;
+        }
+
+        .task-stats span {
+            color: #9099a8;
+            font-size: 10px;
+        }
+
+
+    /* PROGRESS */
+
+    .progress-large {
+        height: 8px;
+        background: #edf0f5;
+        border-radius: 20px;
+        margin-bottom: 10px;
+    }
+
+        .progress-large .progress-bar {
+            background: #4f6ff5;
+            border-radius: 20px;
+        }
+
+    .progress-footer {
+        display: flex;
+        justify-content: space-between;
+        color: #8a94a4;
+        font-size: 11px;
+    }
+
+    .completed-text {
+        color: #20a66a;
+    }
+
+
+    /* PANEL */
+
+    .tasks-panel {
+        background: white;
+        border: 1px solid #e5e9f0;
+        border-radius: 17px;
+        padding: 25px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    }
+
+    .tasks-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+        .tasks-panel-header h3 {
+            margin: 0 0 3px;
+            color: #172033;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .tasks-panel-header p {
+            margin: 0;
+            color: #8a94a4;
+            font-size: 12px;
+        }
+
+    .task-count-badge {
+        padding: 6px 10px;
+        background: #f0f3f8;
+        border-radius: 20px;
+        color: #687386;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+    /* TASK LIST */
+
+    .task-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .task-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 19px 5px;
+        border-bottom: 1px solid #edf0f4;
+        transition: 0.2s ease;
+    }
+
+        .task-row:last-child {
+            border-bottom: none;
+        }
+
+        .task-row:hover {
+            background: #fafbfc;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 10px;
+        }
+
+
+    /* CHECK */
+
+    .task-check {
+        align-self: flex-start;
+        padding-top: 3px;
+    }
+
+    .check-circle {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid #cfd5df;
+    }
+
+        .check-circle.completed {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-color: #28b875;
+            background: #28b875;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+
+    /* CONTENT */
+
+    .task-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .task-title-line {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+
+        .task-title-line h4 {
+            margin: 0;
+            color: #283243;
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+    .task-content > p {
+        color: #7c8798;
+        font-size: 12px;
+        margin: 6px 0 9px;
+    }
+
+    .task-meta {
+        display: flex;
+        gap: 20px;
+        color: #98a0ad;
+        font-size: 10px;
+    }
+
+        .task-meta strong {
+            color: #727c8c;
+            font-weight: 500;
+        }
+
+
+    /* STATUS */
+
+    .status {
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 9px;
+        font-weight: 650;
+    }
+
+    .completed-status {
+        color: #178c58;
+        background: #eaf8f1;
+    }
+
+    .active-status {
+        color: #4567d5;
+        background: #eef3ff;
+    }
+
+    .overdue-status {
+        color: #c84646;
+        background: #fff0f0;
+    }
+
+
+    /* COMPLETED TASK */
+
+    .task-completed .task-title-line h4 {
+        color: #8b94a3;
+        text-decoration: line-through;
+    }
+
+    .task-completed .task-content > p {
+        color: #a4abb6;
+    }
+
+
+    /* ACTIONS */
+
+    .task-actions {
+        display: flex;
+        gap: 7px;
+    }
+
+    .task-action {
+        padding: 7px 10px;
+        border: 1px solid #e1e5ec;
+        border-radius: 8px;
+        background: white;
+        color: #687386;
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .task-action:hover {
+            color: #172033;
+            background: #f5f7fb;
+        }
+
+    .delete-action:hover {
+        color: #dc3545;
+        border-color: #ffd2d2;
+        background: #fff5f5;
+    }
+
+
+    /* EMPTY */
+
+    .task-empty {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-task-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        background: #eef3ff;
+        color: #4f6ff5;
+        font-size: 22px;
+    }
+
+    .task-empty h4 {
+        color: #172033;
+        font-weight: 700;
+    }
+
+    .task-empty p {
+        color: #8993a3;
+        margin-bottom: 20px;
+    }
+
+
+    @@media (max-width: 750px) {
+
+        .tasks-header {
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .summary-top {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .task-stats {
+            width: 100%;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .task-row {
+            align-items: flex-start;
+        }
+
+        .task-actions {
+            flex-direction: column;
+        }
+
+        .task-meta {
+            flex-direction: column;
+            gap: 3px;
+        }
+    }
+
+</style>

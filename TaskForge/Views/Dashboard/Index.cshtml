@@ -1,0 +1,425 @@
+﻿@model List<TaskForge.Models.Project>
+
+@{
+    ViewData["Title"] = "Dashboard";
+
+    var totalProjects = (int)ViewBag.TotalProjects;
+    var totalTasks = (int)ViewBag.TotalTasks;
+    var completedTasks = (int)ViewBag.CompletedTasks;
+    var pendingTasks = (int)ViewBag.PendingTasks;
+}
+
+<div class="dashboard">
+
+    <!-- Başlık -->
+    <div class="dashboard-header">
+        <div>
+            <h1>Dashboard</h1>
+            <p>Projelerini ve görevlerini tek yerden takip et.</p>
+        </div>
+
+        <a asp-controller="Projects"
+           asp-action="Create"
+           class="btn btn-primary">
+            + Yeni Proje
+        </a>
+    </div>
+
+
+    <!-- İstatistik Kartları -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    📁
+                </div>
+
+                <div>
+                    <span>Toplam Proje</span>
+                    <h2>@totalProjects</h2>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    📋
+                </div>
+
+                <div>
+                    <span>Toplam Görev</span>
+                    <h2>@totalTasks</h2>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <span>Tamamlanan</span>
+                    <h2>@completedTasks</h2>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    ⏳
+                </div>
+
+                <div>
+                    <span>Devam Eden</span>
+                    <h2>@pendingTasks</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Projeler -->
+    <div class="dashboard-panel">
+
+        <div class="panel-header">
+            <div>
+                <h3>Projelerim</h3>
+                <p>Aktif projelerine hızlıca göz at.</p>
+            </div>
+
+            <a asp-controller="Projects"
+               asp-action="Index"
+               class="btn btn-outline-primary btn-sm">
+                Tümünü Gör
+            </a>
+        </div>
+
+
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <h4>Henüz proje yok</h4>
+                <p>İlk projenizi oluşturarak TaskForge'u kullanmaya başlayın.</p>
+
+                <a asp-controller="Projects"
+                   asp-action="Create"
+                   class="btn btn-primary">
+                    İlk Projeyi Oluştur
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="row g-3">
+
+                @foreach (var project in Model.Take(6))
+                {
+                    var taskCount = project.TaskItems.Count;
+
+                    var completedCount = project.TaskItems
+                    .Count(x => x.IsCompleted);
+
+                    var progress = taskCount == 0
+                    ? 0
+                    : (int)Math.Round(
+                    (double)completedCount / taskCount * 100
+                    );
+
+                    <div class="col-lg-6 col-xl-4">
+
+                        <div class="project-card">
+
+                            <div class="project-card-header">
+                                <div>
+                                    <h4>@project.Name</h4>
+                                    <span>@project.ProjectPriority</span>
+                                </div>
+
+                                <span class="project-status">
+                                    @project.Status
+                                </span>
+                            </div>
+
+
+                            <p class="project-description">
+                                @project.Description
+                            </p>
+
+
+                            <div class="project-progress-info">
+                                <span>İlerleme</span>
+                                <strong>@progress%</strong>
+                            </div>
+
+
+                            <div class="progress mb-3">
+                                <div class="progress-bar"
+                                     role="progressbar"
+                                     style="width: @progress%">
+                                </div>
+                            </div>
+
+
+                            <div class="project-meta">
+                                <span>
+                                    @completedCount / @taskCount görev
+                                </span>
+
+                                <span>
+                                    @project.DueDate.ToString("dd.MM.yyyy")
+                                </span>
+                            </div>
+
+
+                            <a asp-controller="TaskItems"
+                               asp-action="Index"
+                               asp-route-projectId="@project.Id"
+                               class="btn btn-outline-primary w-100 mt-3">
+                                Projeyi Aç
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+<style>
+
+    body {
+        background-color: #f5f7fb;
+    }
+
+    .dashboard {
+        padding-top: 20px;
+        padding-bottom: 50px;
+    }
+
+    .dashboard-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+
+    .dashboard-header h1 {
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: #18212f;
+    }
+
+    .dashboard-header p {
+        margin: 0;
+        color: #6c757d;
+    }
+
+
+    /* İstatistik kartları */
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 22px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        min-height: 125px;
+
+        border: 1px solid #e8ebf0;
+
+        box-shadow:
+            0 4px 15px rgba(0, 0, 0, 0.04);
+
+        transition: all 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 10px 25px rgba(0, 0, 0, 0.07);
+    }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+
+        border-radius: 14px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #eef3ff;
+
+        font-size: 24px;
+    }
+
+    .stat-card span {
+        color: #7a8493;
+        font-size: 14px;
+    }
+
+    .stat-card h2 {
+        margin: 3px 0 0;
+        font-weight: 700;
+        color: #172033;
+    }
+
+
+    /* Ana panel */
+
+    .dashboard-panel {
+        background: white;
+
+        border-radius: 18px;
+
+        padding: 25px;
+
+        border: 1px solid #e8ebf0;
+
+        box-shadow:
+            0 4px 18px rgba(0, 0, 0, 0.04);
+    }
+
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 22px;
+    }
+
+    .panel-header h3 {
+        margin-bottom: 3px;
+        font-weight: 700;
+        color: #172033;
+    }
+
+    .panel-header p {
+        margin: 0;
+        color: #7a8493;
+        font-size: 14px;
+    }
+
+
+    /* Proje kartı */
+
+    .project-card {
+        border: 1px solid #e7eaf0;
+        border-radius: 15px;
+
+        padding: 20px;
+
+        height: 100%;
+
+        background: #ffffff;
+
+        transition: all 0.2s ease;
+    }
+
+    .project-card:hover {
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 10px 25px rgba(30, 50, 90, 0.08);
+    }
+
+    .project-card-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+
+        margin-bottom: 15px;
+    }
+
+    .project-card-header h4 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 3px;
+        color: #172033;
+    }
+
+    .project-card-header div > span {
+        font-size: 13px;
+        color: #778192;
+    }
+
+    .project-status {
+        background: #edf3ff;
+        color: #3569d4;
+
+        padding: 5px 9px;
+
+        border-radius: 20px;
+
+        font-size: 12px;
+        height: fit-content;
+    }
+
+    .project-description {
+        color: #687386;
+        font-size: 14px;
+
+        min-height: 42px;
+
+        margin-bottom: 20px;
+    }
+
+    .project-progress-info {
+        display: flex;
+        justify-content: space-between;
+
+        font-size: 13px;
+
+        margin-bottom: 7px;
+    }
+
+    .progress {
+        height: 7px;
+        border-radius: 20px;
+    }
+
+    .project-meta {
+        display: flex;
+        justify-content: space-between;
+
+        color: #7b8492;
+        font-size: 13px;
+    }
+
+
+    /* Empty */
+
+    .empty-state {
+        text-align: center;
+        padding: 55px 20px;
+    }
+
+    .empty-state h4 {
+        font-weight: 700;
+        color: #172033;
+    }
+
+    .empty-state p {
+        color: #7b8492;
+        margin-bottom: 20px;
+    }
+
+</style>

@@ -1,0 +1,323 @@
+﻿@model TaskForge.Models.TaskItem
+
+@{
+    ViewData["Title"] = "Görevi Sil";
+}
+
+<div class="delete-page">
+
+    <a asp-action="Index"
+       asp-route-projectId="@Model.ProjectId"
+       class="back-link">
+        ← Görevlere Dön
+    </a>
+
+    <div class="delete-card">
+
+        <div class="danger-icon">
+            !
+        </div>
+
+        <h1>Görevi silmek üzeresin</h1>
+
+        <p class="delete-description">
+            <strong>@Model.Title</strong> görevini silmek istediğinden
+            emin misin? Bu işlem geri alınamaz.
+        </p>
+
+
+        <div class="task-preview">
+
+            <div>
+                <span>Görev</span>
+                <strong>@Model.Title</strong>
+            </div>
+
+            <div>
+                <span>Bitiş Tarihi</span>
+                <strong>@Model.DueDate.ToString("dd.MM.yyyy")</strong>
+            </div>
+
+            <div>
+                <span>Durum</span>
+
+                @if (Model.IsCompleted)
+                {
+                    <strong class="completed-text">
+                        ✓ Tamamlandı
+                    </strong>
+                }
+                else
+                {
+                    <strong class="active-text">
+                        ● Devam Ediyor
+                    </strong>
+                }
+
+            </div>
+
+            <div>
+                <span>Oluşturulma</span>
+                <strong>@Model.CreatedAt.ToString("dd.MM.yyyy")</strong>
+            </div>
+
+        </div>
+
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <div class="description-box">
+                <span>Açıklama</span>
+                <p>@Model.Description</p>
+            </div>
+        }
+
+
+        <div class="warning-box">
+            <strong>Dikkat</strong>
+            <span>Silinen görev tekrar geri getirilemez.</span>
+        </div>
+
+
+        <form asp-action="Delete" method="post">
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="delete-actions">
+
+                <a asp-action="Index"
+                   asp-route-projectId="@Model.ProjectId"
+                   class="cancel-button">
+                    Vazgeç
+                </a>
+
+                <button type="submit"
+                        class="delete-button">
+                    Görevi Kalıcı Olarak Sil
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .delete-page {
+        max-width: 720px;
+        margin: 0 auto;
+        padding-top: 25px;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: 18px;
+        color: #778294;
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+        .back-link:hover {
+            color: #4f6ff5;
+        }
+
+
+    /* CARD */
+
+    .delete-card {
+        padding: 38px;
+        background: white;
+        border: 1px solid #eadfe1;
+        border-radius: 18px;
+        box-shadow: 0 6px 25px rgba(30, 40, 60, .05);
+        text-align: center;
+    }
+
+    .danger-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+        background: #fff0f0;
+        border-radius: 50%;
+        color: #d84d4d;
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+    .delete-card h1 {
+        margin-bottom: 8px;
+        color: #263142;
+        font-size: 24px;
+        font-weight: 750;
+    }
+
+    .delete-description {
+        max-width: 520px;
+        margin: 0 auto 28px;
+        color: #7c8798;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+        .delete-description strong {
+            color: #374151;
+        }
+
+
+    /* TASK INFO */
+
+    .task-preview {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        overflow: hidden;
+        margin-bottom: 18px;
+        background: #e8ebf0;
+        border: 1px solid #e8ebf0;
+        border-radius: 12px;
+        text-align: left;
+    }
+
+        .task-preview div {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            padding: 14px 17px;
+            background: #fafbfc;
+        }
+
+        .task-preview span,
+        .description-box > span {
+            color: #969eaa;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        .task-preview strong {
+            color: #4c5666;
+            font-size: 11px;
+        }
+
+    .completed-text {
+        color: #20a66a !important;
+    }
+
+    .active-text {
+        color: #4f6ff5 !important;
+    }
+
+
+    /* DESCRIPTION */
+
+    .description-box {
+        padding: 14px 17px;
+        margin-bottom: 18px;
+        background: #fafbfc;
+        border: 1px solid #e8ebf0;
+        border-radius: 10px;
+        text-align: left;
+    }
+
+        .description-box p {
+            margin: 5px 0 0;
+            color: #687386;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+
+    /* WARNING */
+
+    .warning-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        margin-bottom: 25px;
+        background: #fff8f1;
+        border: 1px solid #f6dfc5;
+        border-radius: 9px;
+        text-align: left;
+    }
+
+        .warning-box strong {
+            color: #b86c19;
+            font-size: 10px;
+        }
+
+        .warning-box span {
+            color: #a47c51;
+            font-size: 10px;
+        }
+
+
+    /* BUTTONS */
+
+    .delete-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 9px;
+    }
+
+    .cancel-button {
+        padding: 10px 17px;
+        background: white;
+        border: 1px solid #dfe4eb;
+        border-radius: 9px;
+        color: #687386;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+        .cancel-button:hover {
+            background: #f6f8fb;
+            color: #263142;
+        }
+
+    .delete-button {
+        padding: 10px 17px;
+        background: #d94c4c;
+        border: 1px solid #d94c4c;
+        border-radius: 9px;
+        color: white;
+        font-size: 11px;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+        .delete-button:hover {
+            background: #c63d3d;
+            border-color: #c63d3d;
+        }
+
+
+    @@media (max-width: 600px) {
+
+        .delete-card {
+            padding: 25px 20px;
+        }
+
+        .task-preview {
+            grid-template-columns: 1fr;
+        }
+
+        .delete-actions {
+            flex-direction: column-reverse;
+        }
+
+            .delete-actions > * {
+                width: 100%;
+                text-align: center;
+            }
+    }
+
+</style>

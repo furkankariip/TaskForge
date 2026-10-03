@@ -1,0 +1,157 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - TaskForge</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TaskForge.styles.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    TF
+                </div>
+
+                <div>
+                    <h4>TaskForge</h4>
+                    <span>Project Manager</span>
+                </div>
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <span class="nav-title">MENÜ</span>
+
+                <a asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="sidebar-link @(currentController == "Dashboard" ? "active" : "")">
+
+                    <span class="sidebar-icon">⌂</span>
+                    <span>Dashboard</span>
+
+                </a>
+
+
+                <a asp-controller="Projects"
+                   asp-action="Index"
+                   class="sidebar-link @(currentController == "Projects" && currentAction != "Create" ? "active" : "")">
+
+                    <span class="sidebar-icon">▣</span>
+                    <span>Projeler</span>
+
+                </a>
+
+
+                <a asp-controller="Projects"
+                   asp-action="Create"
+                   class="sidebar-link @(currentController == "Projects" && currentAction == "Create" ? "active" : "")">
+
+                    <span class="sidebar-icon">＋</span>
+                    <span>Yeni Proje</span>
+
+                </a>
+
+            </nav>
+
+
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <div class="sidebar-user">
+
+                    <div class="user-avatar">
+                        @(User.Identity.Name?
+                            .Substring(0, 1)
+                            .ToUpper())
+                    </div>
+
+                    <div class="user-info">
+                        <span>Giriş yapıldı</span>
+
+                        <strong>
+                            @User.Identity.Name
+                        </strong>
+                    </div>
+
+
+                    <form asp-controller="Account"
+                          asp-action="Logout"
+                          method="post">
+
+                        <button type="submit"
+                                class="logout-button"
+                                title="Çıkış Yap">
+                            ↪
+                        </button>
+
+                    </form>
+
+                </div>
+            }
+
+        </aside>
+
+
+        <!-- ANA ALAN -->
+        <main class="main-content">
+
+            <!-- TOPBAR -->
+            <header class="topbar">
+
+                <div>
+                    <span class="topbar-page">
+                        @ViewData["Title"]
+                    </span>
+                </div>
+
+                <div class="topbar-right">
+
+                    @if (User.Identity != null &&
+                    User.Identity.IsAuthenticated)
+                    {
+                        <span class="online-dot"></span>
+                        <span class="online-text">
+                            Çevrimiçi
+                        </span>
+                    }
+
+                </div>
+
+            </header>
+
+
+            <!-- SAYFA -->
+            <div class="content-wrapper">
+
+                @RenderBody()
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

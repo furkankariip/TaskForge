@@ -1,0 +1,431 @@
+﻿@model TaskForge.Models.TaskItem
+
+@{
+    ViewData["Title"] = "Görevi Düzenle";
+}
+
+<div class="form-page">
+
+    <div class="form-page-header">
+
+        <a asp-action="Index"
+           asp-route-projectId="@Model.ProjectId"
+           class="back-link">
+            ← Görevlere Dön
+        </a>
+
+        <h1>Görevi Düzenle</h1>
+        <p>Görev bilgilerini ve tamamlanma durumunu güncelle.</p>
+
+    </div>
+
+
+    <div class="form-card">
+
+        <form asp-action="Edit" method="post">
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ProjectId" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger validation-summary">
+            </div>
+
+
+            <!-- GÖREV BİLGİLERİ -->
+
+            <div class="form-section">
+
+                <div class="section-title">
+
+                    <div class="section-icon">
+                        ✓
+                    </div>
+
+                    <div>
+                        <h3>Görev Bilgileri</h3>
+                        <p>Görevin başlığını ve açıklamasını düzenle.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="mb-4">
+
+                    <label asp-for="Title"
+                           class="form-label">
+                        Görev Başlığı
+                    </label>
+
+                    <input asp-for="Title"
+                           class="form-control custom-input" />
+
+                    <span asp-validation-for="Title"
+                          class="text-danger validation-text">
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <label asp-for="Description"
+                           class="form-label">
+                        Açıklama
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control custom-input"
+                              rows="5"></textarea>
+
+                    <span asp-validation-for="Description"
+                          class="text-danger validation-text">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- PLANLAMA -->
+
+            <div class="form-section">
+
+                <div class="section-title">
+
+                    <div class="section-icon">
+                        ◷
+                    </div>
+
+                    <div>
+                        <h3>Planlama</h3>
+                        <p>Bitiş tarihini ve görev durumunu güncelle.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="DueDate"
+                               class="form-label">
+                            Bitiş Tarihi
+                        </label>
+
+                        <input asp-for="DueDate"
+                               type="date"
+                               class="form-control custom-input" />
+
+                        <span asp-validation-for="DueDate"
+                              class="text-danger validation-text">
+                        </span>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Görev Durumu
+                        </label>
+
+                        <label class="completion-card">
+
+                            <input asp-for="IsCompleted"
+                                   class="form-check-input" />
+
+                            <div class="completion-content">
+
+                                <strong>
+                                    Görev Tamamlandı
+                                </strong>
+
+                                <span>
+                                    Görev tamamlandıysa işaretle.
+                                </span>
+
+                            </div>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="form-actions">
+
+                <a asp-action="Index"
+                   asp-route-projectId="@Model.ProjectId"
+                   class="btn-cancel">
+                    Vazgeç
+                </a>
+
+                <button type="submit"
+                        class="btn-save">
+                    Değişiklikleri Kaydet
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .form-page {
+        max-width: 950px;
+        margin: 0 auto;
+        padding-top: 10px;
+    }
+
+    .form-page-header {
+        margin-bottom: 25px;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: 13px;
+        color: #778294;
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+        .back-link:hover {
+            color: #4f6ff5;
+        }
+
+    .form-page-header h1 {
+        margin: 0 0 6px;
+        color: #172033;
+        font-size: 30px;
+        font-weight: 750;
+    }
+
+    .form-page-header p {
+        margin: 0;
+        color: #7f8998;
+        font-size: 13px;
+    }
+
+
+    /* CARD */
+
+    .form-card {
+        overflow: hidden;
+        background: white;
+        border: 1px solid #e5e9f0;
+        border-radius: 18px;
+        box-shadow: 0 5px 20px rgba(20, 35, 65, 0.04);
+    }
+
+
+    /* VALIDATION */
+
+    .validation-summary {
+        margin: 20px 32px 0;
+        font-size: 11px;
+    }
+
+
+    /* SECTIONS */
+
+    .form-section {
+        padding: 28px 32px;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .section-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 11px;
+        background: #eef3ff;
+        color: #4f6ff5;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .section-title h3 {
+        margin: 0 0 2px;
+        color: #263142;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .section-title p {
+        margin: 0;
+        color: #929baa;
+        font-size: 11px;
+    }
+
+
+    /* INPUTS */
+
+    .form-label {
+        margin-bottom: 7px;
+        color: #465264;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .custom-input {
+        min-height: 44px;
+        padding-left: 13px;
+        padding-right: 13px;
+        background: #fbfcfd;
+        border: 1px solid #dfe4eb;
+        border-radius: 9px;
+        color: #283243;
+        font-size: 13px;
+        transition: 0.2s ease;
+    }
+
+    textarea.custom-input {
+        padding-top: 12px;
+    }
+
+    .custom-input:focus {
+        background: white;
+        border-color: #6f89f7;
+        box-shadow: 0 0 0 3px rgba(79, 111, 245, 0.10);
+    }
+
+    .validation-text {
+        display: block;
+        margin-top: 5px;
+        font-size: 10px;
+    }
+
+
+    /* COMPLETION */
+
+    .completion-card {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        margin: 0;
+        background: #fbfcfd;
+        border: 1px solid #dfe4eb;
+        border-radius: 9px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .completion-card:hover {
+            background: #f7f9fc;
+            border-color: #cfd6e1;
+        }
+
+        .completion-card .form-check-input {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+    .completion-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+        .completion-content strong {
+            color: #465264;
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .completion-content span {
+            color: #929baa;
+            font-size: 9px;
+        }
+
+
+    /* ACTIONS */
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 20px 32px;
+        background: #fafbfc;
+    }
+
+    .btn-cancel {
+        padding: 10px 18px;
+        background: white;
+        border: 1px solid #dfe4eb;
+        border-radius: 9px;
+        color: #687386;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+        .btn-cancel:hover {
+            background: #f5f7fa;
+            color: #263142;
+        }
+
+    .btn-save {
+        padding: 10px 20px;
+        background: #4f6ff5;
+        border: none;
+        border-radius: 9px;
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+        box-shadow: 0 5px 12px rgba(79, 111, 245, 0.18);
+        transition: 0.2s;
+    }
+
+        .btn-save:hover {
+            background: #405fdc;
+            transform: translateY(-1px);
+        }
+
+
+    @@media (max-width: 700px) {
+
+        .form-section {
+            padding: 22px 20px;
+        }
+
+        .form-actions {
+            padding: 18px 20px;
+        }
+    }
+
+</style>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
