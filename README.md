@@ -42,7 +42,7 @@ It allows users to securely manage their own projects, create and track tasks, m
 
 ### Task Management
 
-![TaskForge Tasks](screenshots/tasks.png)
+![TaskForge Tasks](screenshots/task.png)
 
 ### Authentication
 
