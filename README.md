@@ -32,7 +32,21 @@ It allows users to securely manage their own projects, create and track tasks, m
 
 ## Screenshots
 
-Screenshots of the application will be added here.
+### Dashboard
+
+![TaskForge Dashboard](screenshots/dashboard.png)
+
+### Projects
+
+![TaskForge Projects](screenshots/projects.png)
+
+### Task Management
+
+![TaskForge Tasks](screenshots/tasks.png)
+
+### Authentication
+
+![TaskForge Login](screenshots/login.png)
 
 ## Project Status
 
